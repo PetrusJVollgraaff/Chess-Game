@@ -124,7 +124,7 @@ class King(Piece):
 
             if board[i][left] == 0:
                 moves.append((left, i))
-                if canCastling[0]:
+                if canCastling[1]:
                     moves.append((left - 1, i))
 
             elif self.color != board[i][left].color:
@@ -184,17 +184,18 @@ class King(Piece):
         while left_col < 8:
             if left_col != j:
                 if board[i][left_col] != 0 :
-                    if left_count > 1 and board[i][left_col].rook and self.color == board[i][left_col].color:
+                    if left_count >= 1 and board[i][left_col].rook and self.color == board[i][left_col].color:
                         rookL_col = left_col
                         castlingL = True
                         left_yn = True
                     else:
                         left_yn = True
 
-            left_count += 1
+
             if left_yn:
                 break
             else:
+                left_count += 1
                 left_col += 1
 
 
@@ -202,16 +203,17 @@ class King(Piece):
         while right_col > -1:
             if right_col != j:
                 if board[i][right_col] != 0:
-                    if right_count > 1 and board[i][right_col].rook and self.color == board[i][right_col].color:
+                    if right_count >= 1 and board[i][right_col].rook and self.color == board[i][right_col].color:
                         rookR_col = right_col
                         castlingR = True
                     else:
                         right_yn = True
 
-            right_count += 1
+
             if right_yn:
                 break
             else:
+                right_count += 1
                 right_col -= 1
 
 

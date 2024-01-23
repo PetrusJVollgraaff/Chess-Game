@@ -9,7 +9,6 @@ class Board:
         self.pawnpromote = False
 
         self.board = [[0 for x in range(self.cols)] for _ in range(rows)]
-        # print(self.board)
 
         for i in range(8):
             self.board[6][i] = piece.Pawn(6, i, "w")
@@ -166,17 +165,16 @@ class Board:
         if nBoard[start[1]][start[0]].king:
             canCastling = nBoard[start[1]][start[0]].can_Castling(nBoard)
 
+            #castling right
             if start[0] < end[0] and canCastling[1]:
-                #print( nBoard[start[1]][canCastling[3]]  )
                 nBoard[start[1]][canCastling[3]].change_pos( (end[1], (end[0] - 1)) )
                 nBoard[end[1]][(end[0] - 1)] = nBoard[start[1]][canCastling[3]]
                 nBoard[start[1]][canCastling[3]] = 0
-                #pass
+
+            #castling left
             elif start[0] > end[0] and canCastling[0]:
-                #print( nBoard[start[1]][canCastling[2]] )
                 nBoard[start[1]][canCastling[2]].change_pos((end[1], (end[0] + 1)) )
                 nBoard[end[1]][(end[0] + 1)] = nBoard[start[1]][canCastling[2]]
                 nBoard[start[1]][canCastling[2]] = 0
-                #pass
 
         self.board = nBoard

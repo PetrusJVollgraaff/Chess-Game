@@ -180,8 +180,6 @@ class King(Piece):
         left_yn = False
         right_yn = False
 
-        print(self.color)
-
         # Left
         while left_col < 8:
             if left_col != j:

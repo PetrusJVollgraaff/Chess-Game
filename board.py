@@ -143,6 +143,7 @@ class Board:
             elif nBoard[start[1]][start[0]].color == 'b' and end[1] == 7:
                 self.pawnpromote = True
                 print("promote black pawn")
+
         elif nBoard[start[1]][start[0]].king:
             self.changeCastling(start, end)
 

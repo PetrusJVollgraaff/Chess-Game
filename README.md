@@ -9,7 +9,7 @@ This is a small chess game coded with pygame.
 
 > * Add red dots to indicate valid moves per chess piece and blue squares to indicate attaching moves when clicking on an individual.
 
-> * Move chess piece to valid moves / attach places
+> * Move chess piece to block that is valid move / attach move
 
 > * Check if the King is in Check
 

@@ -13,9 +13,9 @@ This is a small chess game coded with pygame.
 
 > * Check if the King is in Check
 
-> * Castling > swaping the king and rook.
+> * Castling > swapping the king and rook horizontally when there is no piece between them.
 
-> * Winners screen.
+> * Winners screen that will indicate who won.
 
 ### Outstanding:
 

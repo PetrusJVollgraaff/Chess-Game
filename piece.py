@@ -14,6 +14,7 @@ class Piece:
         self.col = col
         self.color = color
         self.selected = False
+        self.rook = False
         self.king = False
         self.pawn = False
         self.img  = None
@@ -63,6 +64,7 @@ class Piece:
         return (self.col, self.row)
 
 
+
 class Bishop(Piece):
     img_index = 0
 
@@ -89,59 +91,133 @@ class King(Piece):
         moves = []
         attack = []
 
+        canCastling = self.can_Castling(board)
+
+        # RIGHT
         if 0 <= j < 7:
-            down = j + 1
-            if board[i][down] == 0:
-                moves.append((down, i))
-            elif self.color != board[i][down].color:
-                attack.append((down, i))
+            right = j + 1
+            if board[i][right] == 0:
+                moves.append((right, i))
+                if canCastling[0]:
+                    moves.append((right + 1, i))
 
+            elif self.color != board[i][right].color:
+                attack.append((right, i))
+
+            # RIGTHDOWN diagnal
             if 0 <= i < 7:
-                if board[i + 1][down] == 0:
-                    moves.append((down, i + 1))
-                elif self.color != board[i + 1][down].color:
-                    attack.append((down, i + 1))
+                if board[i + 1][right] == 0:
+                    moves.append((right, i + 1))
+                elif self.color != board[i + 1][right].color:
+                    attack.append((right, i + 1))
 
+            # RIGTHUP diagnal
             if 7 >= i > 0:
-                if board[i - 1][down] == 0:
-                    moves.append((down, i - 1))
-                elif self.color != board[i - 1][down].color:
-                    attack.append((down, i - 1))
+                if board[i - 1][right] == 0:
+                    moves.append((right, i - 1))
+                elif self.color != board[i - 1][right].color:
+                    attack.append((right, i - 1))
 
+        # LEFT
         if 7 >= j > 0:
-            up = j - 1
+            left = j - 1
 
-            if board[i][up] == 0:
-                moves.append((up, i))
-            elif self.color != board[i][up].color:
-                attack.append((up, i))
+            if board[i][left] == 0:
+                moves.append((left, i))
+                if canCastling[0]:
+                    moves.append((left - 1, i))
 
+            elif self.color != board[i][left].color:
+                attack.append((left, i))
+
+            #LEFTDOWN diagnal
             if 0 <= i < 7:
-                if board[i + 1][up] == 0:
-                    moves.append((up, i + 1))
-                elif self.color != board[i + 1][up].color:
-                    attack.append((up, i + 1))
+                if board[i + 1][left] == 0:
+                    moves.append((left, i + 1))
+                elif self.color != board[i + 1][left].color:
+                    attack.append((left, i + 1))
 
+            # LEFTUP diagnal
             if 7 >= i > 0:
-                if board[i - 1][up] == 0:
-                    moves.append((up, i - 1))
-                elif self.color != board[i - 1][up].color:
-                    attack.append((up, i - 1))
+                if board[i - 1][left] == 0:
+                    moves.append((left, i - 1))
+                elif self.color != board[i - 1][left].color:
+                    attack.append((left, i - 1))
 
+        # DOWN
         if 0 <= i < 7:
             if board[i + 1][j] == 0:
                 moves.append((j, i + 1))
+
             elif self.color != board[i + 1][j].color:
                 attack.append((j, i + 1))
 
+        # UP
         if 7 >= i > 0:
             if board[i - 1][j] == 0:
                 moves.append((j, i - 1))
+
             elif self.color != board[i - 1][j].color:
                 attack.append((j, i - 1))
 
         return [moves, attack]
 
+    def can_Castling(self, board):
+        i = self.row
+        j = self.col
+
+        left_count = 0
+        right_count = 0
+
+        left_col = self.col
+        right_col = self.col
+
+        rookR_col = 8
+        rookL_col = 0
+
+        castlingR = False
+        castlingL = False
+        left_yn = False
+        right_yn = False
+
+        print(self.color)
+
+        # Left
+        while left_col < 8:
+            if left_col != j:
+                if board[i][left_col] != 0 :
+                    if left_count > 1 and board[i][left_col].rook and self.color == board[i][left_col].color:
+                        rookL_col = left_col
+                        castlingL = True
+                        left_yn = True
+                    else:
+                        left_yn = True
+
+            left_count += 1
+            if left_yn:
+                break
+            else:
+                left_col += 1
+
+
+        # RIGHT
+        while right_col > -1:
+            if right_col != j:
+                if board[i][right_col] != 0:
+                    if right_count > 1 and board[i][right_col].rook and self.color == board[i][right_col].color:
+                        rookR_col = right_col
+                        castlingR = True
+                    else:
+                        right_yn = True
+
+            right_count += 1
+            if right_yn:
+                break
+            else:
+                right_col -= 1
+
+
+        return (castlingL, castlingR, rookR_col, rookL_col)
 
 class Knight(Piece):
     img_index = 2
@@ -261,6 +337,16 @@ class Pawn(Piece):
 
         return [moves, attack]
 
+    def can_change(self, board):
+        canchange = False
+        if(self.color == 'w' and self.row == 0):
+            canchange = True
+
+        elif(self.color == 'b' and self.row == 7):
+            canchange = True
+
+        return canchange
+
 
 class Queen(Piece):
     img_index = 4
@@ -282,6 +368,7 @@ class Rook(Piece):
 
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
+        self.rook = True
         self.img = getPieceImage(color, "rook")
 
     def valid_moves(self, board):

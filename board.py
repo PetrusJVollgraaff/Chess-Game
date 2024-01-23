@@ -39,6 +39,7 @@ class Board:
             for block in row:
                 if block != 0:
                     block.update_valid_moves(self.board)
+                    #pass
 
     def draw(self, win):
         for row in self.board:
@@ -59,14 +60,18 @@ class Board:
                     if block.selected:
                         prev = block.getPos()
 
+
         # if piece
         if self.board[j][i] == 0 and prev != (-1, -1):
             changed = self.step_move(prev, (i, j), 0, changed)
+
         else:
             if prev == (-1, -1):
                 self.reset_selected()
                 if self.board[j][i] != 0:
+                    #self.board[j][i].update_valid_moves(self.board)
                     self.board[j][i].selected = True
+
             else:
 
                 if self.board[prev[1]][prev[0]].color != self.board[j][i].color:
@@ -139,6 +144,8 @@ class Board:
             elif nBoard[start[1]][start[0]].color == 'b' and end[1] == 7:
                 self.pawnpromote = True
                 print("promote black pawn")
+        elif nBoard[start[1]][start[0]].king:
+            self.changeCastling(start, end)
 
         nBoard[start[1]][start[0]].change_pos( (end[1], end[0]) )
         nBoard[end[1]][end[0]] = nBoard[start[1]][start[0]]
@@ -152,3 +159,24 @@ class Board:
 
     def promotion(self, end):
         pass
+
+    def changeCastling(self, start, end):
+        nBoard = self.board[:]
+
+        if nBoard[start[1]][start[0]].king:
+            canCastling = nBoard[start[1]][start[0]].can_Castling(nBoard)
+
+            if start[0] < end[0] and canCastling[1]:
+                #print( nBoard[start[1]][canCastling[3]]  )
+                nBoard[start[1]][canCastling[3]].change_pos( (end[1], (end[0] - 1)) )
+                nBoard[end[1]][(end[0] - 1)] = nBoard[start[1]][canCastling[3]]
+                nBoard[start[1]][canCastling[3]] = 0
+                #pass
+            elif start[0] > end[0] and canCastling[0]:
+                #print( nBoard[start[1]][canCastling[2]] )
+                nBoard[start[1]][canCastling[2]].change_pos((end[1], (end[0] + 1)) )
+                nBoard[end[1]][(end[0] + 1)] = nBoard[start[1]][canCastling[2]]
+                nBoard[start[1]][canCastling[2]] = 0
+                #pass
+
+        self.board = nBoard
